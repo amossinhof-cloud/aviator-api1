@@ -3,11 +3,11 @@ from flask_cors import CORS
 import os, joblib, pandas as pd
 
 app = Flask(__name__)
-CORS(app)  # permite requisições de qualquer origem
+CORS(app)
 
-# Carrega ou cria modelo
+# Carregar ou criar modelo
 if not os.path.exists("aviator_model.pkl"):
-    import train
+    import train  # train.py deve criar aviator_model.pkl
 model = joblib.load("aviator_model.pkl")
 
 @app.route("/")
@@ -27,7 +27,7 @@ def predict():
     sinal = "ENTRAR" if prob >= 0.65 else "NÃO ENTRAR"
     return jsonify({
         "sinal": sinal,
-        "probabilidade": round(float(prob),2),
+        "probabilidade": round(float(prob), 2),
         "cashout": 2.0
     })
 
