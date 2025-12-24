@@ -1,6 +1,11 @@
-from flask import Flask, request, jsonify
+import os
 import joblib
 import pandas as pd
+from flask import Flask, request, jsonify
+
+# Se o arquivo aviator_model.pkl não existir, cria ele
+if not os.path.exists("aviator_model.pkl"):
+    import train  # Executa train.py e cria o modelo
 
 app = Flask(__name__)
 model = joblib.load("aviator_model.pkl")
@@ -29,4 +34,5 @@ def predict():
         "cashout": 2.0
     })
 
-app.run(host="0.0.0.0", port=5000)
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000)
