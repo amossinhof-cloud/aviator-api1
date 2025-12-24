@@ -1,18 +1,18 @@
 from flask import Flask, request, jsonify
-import os
-import joblib
-import pandas as pd
-
-# Se o arquivo aviator_model.pkl não existir, cria ele
-if not os.path.exists("aviator_model.pkl"):
-    import train  # cria aviator_model.pkl
+from flask_cors import CORS
+import os, joblib, pandas as pd
 
 app = Flask(__name__)
+CORS(app)  # permite requisições de qualquer origem
+
+# Carrega ou cria modelo
+if not os.path.exists("aviator_model.pkl"):
+    import train
 model = joblib.load("aviator_model.pkl")
 
 @app.route("/")
 def home():
-    return {"status": "API Aviator Online"}
+    return {"status":"API Aviator Online"}
 
 @app.route("/predict", methods=["POST"])
 def predict():
@@ -27,7 +27,7 @@ def predict():
     sinal = "ENTRAR" if prob >= 0.65 else "NÃO ENTRAR"
     return jsonify({
         "sinal": sinal,
-        "probabilidade": round(float(prob), 2),
+        "probabilidade": round(float(prob),2),
         "cashout": 2.0
     })
 
